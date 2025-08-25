@@ -27,3 +27,7 @@
 .dark {
     background-color: #b58863;
 }
+
+.selected {
+    outline: 3px solid red;
+}

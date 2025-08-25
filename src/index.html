@@ -4,9 +4,11 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+        <p id="status" style="text-align:center; font-weight:bold;"></p>
         <div id="board">
             <script>
                 const board = document.getElementById("board");
+                const status = document.getElementById("status");
                 const startingPosition = [
                     ["♜","♞","♝","♛","♚","♝","♞","♜"], // Black back rank
                     ["♟","♟","♟","♟","♟","♟","♟","♟"], // Black pawns
@@ -17,6 +19,9 @@
                     ["♙","♙","♙","♙","♙","♙","♙","♙"], // White pawns
                     ["♖","♘","♗","♕","♔","♗","♘","♖"]  // White back rank
                 ];
+
+                // Track selection
+                let selectedSquare = null;
 
                 for (let row = 0; row < 8; row++) {
                 for (let col = 0; col < 8; col++) {
@@ -29,10 +34,43 @@
                     } else {
                     square.classList.add("dark");
                     }
-                    square.textContent = startingPosition[row][col]
+
+                    square.textContent = startingPosition[row][col];
+
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+                    square.addEventListener("click", () => handleSquareClick(square));
 
                     board.appendChild(square);
                 }
+                }
+
+                function handleSquareClick(square) {
+                    const row = square.dataset.row;
+                    const col = square.dataset.col;
+                    const piece = square.textContent;
+
+                    if (!selectedSquare) {
+                        if (piece === "") {
+                            status.textContent = "No piece";
+                            return;
+                        }
+                        selectedSquare = square;
+                        square.classList.add("selected");
+                        status.textContent = `Selected piece ${piece} at square [${row} ${col}]`;
+                    } else {
+                        if (square === selectedSquare) {
+                            selectedSquare.classList.remove("selected");
+                            selectedSquare = null;
+                            status.textContent = "selection removed";
+                            return;
+                        }
+                        square.textContent = selectedSquare.textContent;
+                        selectedSquare.textContent = "";
+                        selectedSquare.classList.remove("selected");
+                        status.textContent = "Piece moved"
+                        selectedSquare = null;
+                    }
                 }
 
 
