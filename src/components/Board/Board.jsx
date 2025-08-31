@@ -30,7 +30,12 @@ export default function Board({ chessModule }) {
             setStatus(`Selected ${piece} at [${row}, ${col}]`);
         }
         else{
-            const success = chessModule._try_move(selected.col, selected.row, col, row);
+            let promotionPiece = 0;
+            const movingPiece = chessModule._get_piece(selected.col, selected.row);
+            if (movingPiece === 1 && row === 0) promotionPiece = 5;
+            else if (movingPiece === 6 && row === 7) promotionPiece = 11;
+            console.log(`selected piece: ${movingPiece}, promoting to: ${promotionPiece}`);
+            const success = chessModule._try_move(selected.col, selected.row, col, row, promotionPiece);
             console.log(`Tried move [${selected.row}, ${selected.col}] to [${row}, ${col}]`);
 
             if (success) //Valid move
