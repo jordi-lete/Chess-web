@@ -1,11 +1,16 @@
 import React from "react";
 import Board from "./components/Board/Board"
+import WasmLoader from "./components/wasm/wasmLoader";
 
 function App() {
   return (
     <div className="App">
       <h1> Chess website </h1>
-      <Board />
+      <WasmLoader>
+        {(chessModule) => (
+          <Board chessModule={chessModule}/>
+        )}
+      </WasmLoader>
     </div>
   )
 }
