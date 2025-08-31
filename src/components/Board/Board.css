@@ -15,8 +15,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
-    font-weight: bold;
 }
 
 /* Light and dark colors */
@@ -30,4 +28,11 @@
 
 .selected {
     outline: 3px solid red;
+}
+
+.piece {
+    width: 80%; /* 80% of square width */
+    height: 80%;
+    object-fit: contain;
+    pointer-events: none;
 }
