@@ -12,6 +12,7 @@
 .square {
     width: 60px;
     height: 60px;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,20 +20,29 @@
 
 /* Light and dark colors */
 .light {
-    background-color: #f0d9b5;
+    background-color: #eafad7;
 }
 
 .dark {
-    background-color: #b58863;
+    background-color: #43c4a0;
 }
 
 .selected {
-    outline: 3px solid red;
+    background-color: grey;
 }
 
 .piece {
-    width: 80%; /* 80% of square width */
-    height: 80%;
+    width: 95%; /* 80% of square width */
+    height: 95%;
+    position: absolute;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.moves {
+    width: 25%; /* 80% of square width */
+    height: 25%;
+    position: absolute;
     object-fit: contain;
     pointer-events: none;
 }
