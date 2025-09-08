@@ -8,6 +8,7 @@ export default function Board({ chessModule }) {
     const [selected, setSelected] = useState(null);
     const [status, setStatus] = useState("Game started. White to move");
     const [legalMoves, setLegalMoves] = useState([]);
+    const [dragging, setDragging] = useState(null); // {file, rank, piece, x, y, offsetX, offsetY}
 
     const mouseDownSquare = useRef(null);
     const boardRef = useRef(null);
@@ -73,6 +74,31 @@ export default function Board({ chessModule }) {
         }
     };
 
+    const handleSquareClick = (file, rank) => {
+        const piece = board[rank][file];
+
+        if (!selected) {
+            if (piece === 0) {
+                setStatus("No piece selected");
+                return;
+            }
+            else if (piece < 7 && chessModule._get_current_turn() === 0) return;
+            else if (piece > 6 && chessModule._get_current_turn() === 1) return;
+            
+            setSelected({ file, rank });
+            setStatus(`Selected ${piece} at [${file}, ${rank}]`);
+
+            // Get the legal moves for the selected piece
+            const moves = getLegalMoves(file, rank);
+            setLegalMoves(moves);
+        }
+        else{
+            tryMove(selected, {file, rank});
+            setSelected(null);
+            setLegalMoves([]); // Clear the legal moves display after move made
+        }
+    };
+
     // ------------------ Event Handlers ------------------
 
     const onSquareMouseDown = (e, file, rank) => {
@@ -84,12 +110,27 @@ export default function Board({ chessModule }) {
 
         mouseDownSquare.current = { file, rank };
 
-        // window.addEventListener("mousemove", onMouseMove);
+        const piece = board[rank][file];
+        const rect = e.currentTarget.getBoundingClientRect();
+        setDragging({
+            file,
+            rank,
+            piece,
+            x: e.clientX,
+            y: e.clientY,
+            offsetX: e.clientX - rect.left,
+            offsetY: e.clientY - rect.top,
+        });
+
+        window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
     };
 
+    const onMouseMove = (e) => {
+        setDragging((d) => d && { ...d, x: e.clientX, y: e.clientY });
+    }
+
     const onMouseUp = (e) => {
-        window.removeEventListener("mouseup", onMouseUp);
         const start = mouseDownSquare.current;
         mouseDownSquare.current = null;
         if (!start) return;
@@ -108,28 +149,13 @@ export default function Board({ chessModule }) {
             setLegalMoves([]);
         }
 
+        cleanup();
     };
 
-    const handleSquareClick = (file, rank) => {
-        const piece = board[rank][file];
-
-        if (!selected) {
-            if (piece === 0) {
-                setStatus("No piece selected");
-                return;
-            }
-            setSelected({ file, rank });
-            setStatus(`Selected ${piece} at [${file}, ${rank}]`);
-
-            // Get the legal moves for the selected piece
-            const moves = getLegalMoves(file, rank);
-            setLegalMoves(moves);
-        }
-        else{
-            tryMove(selected, {file, rank});
-            setSelected(null);
-            setLegalMoves([]); // Clear the legal moves display after move made
-        }
+    const cleanup = () => {
+        setDragging(null);
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
     };
 
     return (
@@ -148,7 +174,7 @@ export default function Board({ chessModule }) {
                         }`}
                         onMouseDown={(ev) => onSquareMouseDown(ev, cIdx, rIdx)}
                     >
-                        {pieceEnum != 0 && (
+                        {pieceEnum !== 0 && !(dragging && dragging.file === cIdx && dragging.rank === rIdx) && (
                             <img
                                 src={pieceImages[pieceEnum]}
                                 alt=""
@@ -168,6 +194,17 @@ export default function Board({ chessModule }) {
                 })
                 )}
             </div>
+            {dragging && (
+                <img
+                    src={pieceImages[dragging.piece]}
+                    alt=""
+                    className="dragging-piece"
+                    style={{
+                    top: `${dragging.y - dragging.offsetY}px`,
+                    left: `${dragging.x - dragging.offsetX}px`,
+                    }}
+                />
+            )}
             <div id="status">{status}</div>
         </div>
     );
