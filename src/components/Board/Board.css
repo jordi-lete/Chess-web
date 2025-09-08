@@ -1,3 +1,11 @@
+#board,
+#board * {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none; 
+    -moz-user-drag: none;   
+    -o-user-drag: none;
+}
+
 #board {
     display: grid;
     grid-template-columns: repeat(8, 60px);
@@ -50,7 +58,6 @@
 }
 
 .dragging-piece {
-    -webkit-user-drag: none;
     position: fixed;
     width: 60px;
     height: 60px;

@@ -76,15 +76,22 @@ export default function Board({ chessModule }) {
 
     const handleSquareClick = (file, rank) => {
         const piece = board[rank][file];
+        if (piece != 0 && ((piece < 7 && chessModule._get_current_turn() === 1) || (piece > 6 && chessModule._get_current_turn() === 0))) {
+            setSelected({ file, rank });
+            setStatus(`Selected ${piece} at [${file}, ${rank}]`);
 
-        if (!selected) {
+            // Get the legal moves for the selected piece
+            const moves = getLegalMoves(file, rank);
+            setLegalMoves(moves);
+        }
+        else if (!selected) {
             if (piece === 0) {
                 setStatus("No piece selected");
                 return;
             }
             else if (piece < 7 && chessModule._get_current_turn() === 0) return;
             else if (piece > 6 && chessModule._get_current_turn() === 1) return;
-            
+
             setSelected({ file, rank });
             setStatus(`Selected ${piece} at [${file}, ${rank}]`);
 
@@ -106,22 +113,24 @@ export default function Board({ chessModule }) {
         if (e.button !== 0) return;
         e.preventDefault();
 
-        if (!selected) setLegalMoves(getLegalMoves(file, rank));
+        const piece = board[rank][file];
 
         mouseDownSquare.current = { file, rank };
 
-        const piece = board[rank][file];
         const rect = e.currentTarget.getBoundingClientRect();
-        setDragging({
-            file,
-            rank,
-            piece,
-            x: e.clientX,
-            y: e.clientY,
-            offsetX: e.clientX - rect.left,
-            offsetY: e.clientY - rect.top,
-        });
-
+        if (piece != 0) {
+            setLegalMoves(getLegalMoves(file, rank));
+            setDragging({
+                file,
+                rank,
+                piece,
+                x: e.clientX,
+                y: e.clientY,
+                offsetX: e.clientX - rect.left,
+                offsetY: e.clientY - rect.top,
+            });
+        }
+        
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("mouseup", onMouseUp);
     };
