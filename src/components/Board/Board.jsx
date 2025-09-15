@@ -31,10 +31,11 @@ export default function Board({ chessModule }) {
         const el = boardRef.current;
         if (!el) return null;
         const rect = el.getBoundingClientRect();
+        const squareSize = rect.width / 8;
         const relX = clientX - rect.left;
         const relY = clientY - rect.top;
-        const file = Math.floor(relX / 60);
-        const rank = Math.floor(relY / 60);
+        const file = Math.floor(relX / squareSize);
+        const rank = Math.floor(relY / squareSize);
         if (file < 0 || file > 7 || rank < 0 || rank > 7) return null;
         return { file, rank };
     };
@@ -210,6 +211,8 @@ export default function Board({ chessModule }) {
                     style={{
                     top: `${dragging.y - dragging.offsetY}px`,
                     left: `${dragging.x - dragging.offsetX}px`,
+                    width: boardRef.current ? boardRef.current.getBoundingClientRect().width / 8 : 0,
+                    height: boardRef.current ? boardRef.current.getBoundingClientRect().height / 8 : 0,
                     }}
                 />
             )}
