@@ -142,20 +142,19 @@ export default function Board({ chessModule }) {
     const onMouseUp = (e) => {
         const start = mouseDownSquare.current;
         mouseDownSquare.current = null;
-        if (!start) return;
 
         const end = squareFromClient(e.clientX, e.clientY);
-        if (!end) return;
-
-        if (start.file === end.file && start.rank === end.rank) {
-            // It's a click
-            handleSquareClick(end.file, end.rank);
-        }
-        else {
-            // It's a drag
-            tryMove(start, end);
-            setSelected(null);
-            setLegalMoves([]);
+        if (start && end) {
+            if (start.file === end.file && start.rank === end.rank) {
+                // It's a click
+                handleSquareClick(end.file, end.rank);
+            }
+            else {
+                // It's a drag
+                tryMove(start, end);
+                setSelected(null);
+                setLegalMoves([]);
+            }
         }
 
         cleanup();
