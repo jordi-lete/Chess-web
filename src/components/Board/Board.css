@@ -11,8 +11,8 @@
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
     border: 0.5vmin solid black;
-    width: 50vmin;
-    height: 50vmin;
+    width: 70vmin;
+    height: 70vmin;
     margin: auto;
     /* Prevent text selection inside board */
     user-select: none;
@@ -59,4 +59,28 @@
     position: fixed;
     pointer-events: none;
     z-index: 1000;
+}
+
+.file-label {
+    position: absolute;
+    bottom: 0px;
+    right: 4px;
+    font-size: 1.5vmin;
+    pointer-events: none;
+}
+
+.rank-label{
+    position: absolute;
+    top: 0px;
+    left: 4px;
+    font-size: 1.5vmin;
+    pointer-events: none;
+}
+
+.light-text {
+    color: #eafad7;
+}
+
+.dark-text {
+    color: #43c4a0;
 }

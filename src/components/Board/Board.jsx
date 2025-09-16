@@ -178,9 +178,7 @@ export default function Board({ chessModule }) {
                     return (
                     <div
                         key={`${rIdx}-${cIdx}`}
-                        className={`square ${isLight ? "light" : "dark"} ${
-                        isSelected ? "selected" : ""
-                        }`}
+                        className={`square ${isLight ? "light" : "dark"}`}
                         onMouseDown={(ev) => onSquareMouseDown(ev, cIdx, rIdx)}
                     >
                         {pieceEnum !== 0 && !(dragging && dragging.file === cIdx && dragging.rank === rIdx) && (
@@ -197,6 +195,16 @@ export default function Board({ chessModule }) {
                             alt=""
                             className="moves"
                             />
+                        )}
+                        {rIdx === 7 && (
+                            <span className={`file-label ${isLight ? "dark-text" : "light-text"}`}>
+                                {String.fromCharCode(97 + cIdx)}
+                            </span>
+                        )}
+                        {cIdx === 0 && (
+                            <span className={`rank-label ${isLight ? "dark-text" : "light-text"}`}>
+                                {8 - rIdx}
+                            </span>
                         )}
                     </div>
                     );
